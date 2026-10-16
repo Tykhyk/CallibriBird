@@ -1,0 +1,17 @@
+{
+    "name": "CallibriEmg",
+    "rootNamespace": "CallibriEmg",
+    "references": [
+        "NeuroSDK2.Runtimes",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

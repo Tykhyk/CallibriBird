@@ -1,0 +1,26 @@
+CallibriBird
+Copyright 2026 Tykhyk Zolotarov
+
+CallibriBird was created by Tykhyk Zolotarov. It is a muscle-rehabilitation
+game: a patient plays Flappy Bird by squeezing a muscle, which a Callibri
+sEMG sensor reads over Bluetooth, while the app records the muscle signal
+and produces a session report.
+
+Tykhyk Zolotarov's work in this project includes the whole EMG session
+system: connecting the sensor, the person list, the guided meditation, the
+rest and strength tests, calibration, controlling the game with a muscle,
+the recording, the progress history and the HTML session report.
+
+This project is licensed under the Apache License, Version 2.0 (see
+LICENSE). Under section 4 of that license, anyone who shares this project
+or a work based on it, as source code or as a built app, must include this
+NOTICE file with it.
+
+This product also includes work by others, under their own licenses (see
+THIRD_PARTY_NOTICES.md):
+  * UnityBird, the original Flappy Bird game code,
+    Copyright (c) 2014 Ge Ziyang, MIT License
+  * NeuroSDK2, the Callibri sensor SDK,
+    Copyright (c) 2025 BrainBit LLC, MIT License
+  * DOTween,
+    Copyright (c) 2014-2026 Daniele Giardini - Demigiant
