@@ -44,7 +44,6 @@ public class LandControl : MonoBehaviour {
         tileStep = tileWidth - SeamOverlap;
 
         Camera cam = Camera.main;
-        float cameraWidth = cam.orthographicSize * 2f * cam.aspect;
         float cameraLeftEdge = cam.transform.position.x - cam.orthographicSize * cam.aspect;
 
         // Anchor the first tile to the camera's actual left edge rather
@@ -55,33 +54,70 @@ public class LandControl : MonoBehaviour {
         transform.position = new Vector3(cameraLeftEdge, transform.position.y, transform.position.z);
         tiles.Add(transform);
 
-        int tileCount = Mathf.Max(2, Mathf.CeilToInt(cameraWidth / tileStep) + 2);
+        CoverCamera();
+    }
 
-        for (int i = 1; i < tileCount; i++)
+    // The window can be resized at any time, and a wider window shows more
+    // ground on both sides, because the camera stays centred. This adds
+    // tiles on whichever side has run out, plus one spare on the right so
+    // the belt never shows a gap while a tile waits to be recycled. It runs
+    // every frame, also after game over: the belt has stopped by then, but
+    // the window can still be resized.
+    private void CoverCamera () {
+        Camera cam = Camera.main;
+        if (cam == null || tileStep <= 0f)
         {
-            GameObject clone = Instantiate(gameObject, transform.position + new Vector3(tileStep * i, 0f, 0f), transform.rotation, transform.parent);
-            // Keep the exact "land" name: BirdControl's collision check
-            // matches on other.name, and Instantiate would otherwise
-            // suffix clones with "(Clone)".
-            clone.name = gameObject.name;
-            // Only one LandControl should run Update/own the tile list.
-            // Disable before Destroy so the clone's own Start never fires
-            // and spawns a further generation of tiles.
-            LandControl cloneControl = clone.GetComponent<LandControl>();
-            cloneControl.enabled = false;
-            Destroy(cloneControl);
-            // Clones don't need to be found individually (GameOver is
-            // driven by the manager's own tile list), and leaving the
-            // "movable" tag on them would make BroadcastMessage("GameOver")
-            // fail since they no longer have a receiver for it.
-            clone.tag = "Untagged";
-
-            tiles.Add(clone.transform);
+            return;
         }
+        float halfView = cam.orthographicSize * cam.aspect;
+        float viewLeft = cam.transform.position.x - halfView;
+        float viewRight = cam.transform.position.x + halfView;
+
+        float leftmostX = float.PositiveInfinity;
+        float rightmostX = float.NegativeInfinity;
+        foreach (Transform tile in tiles)
+        {
+            leftmostX = Mathf.Min(leftmostX, tile.position.x);
+            rightmostX = Mathf.Max(rightmostX, tile.position.x);
+        }
+
+        // A tile's position is its left edge (see the note above Start).
+        while (leftmostX > viewLeft)
+        {
+            leftmostX -= tileStep;
+            AddTileAt(leftmostX);
+        }
+        while (rightmostX + tileWidth < viewRight + tileStep)
+        {
+            rightmostX += tileStep;
+            AddTileAt(rightmostX);
+        }
+    }
+
+    private void AddTileAt (float x) {
+        GameObject clone = Instantiate(gameObject, new Vector3(x, transform.position.y, transform.position.z), transform.rotation, transform.parent);
+        // Keep the exact "land" name: BirdControl's collision check
+        // matches on other.name, and Instantiate would otherwise
+        // suffix clones with "(Clone)".
+        clone.name = gameObject.name;
+        // Only one LandControl should run Update/own the tile list.
+        // Disable before Destroy so the clone's own Start never fires
+        // and spawns a further generation of tiles.
+        LandControl cloneControl = clone.GetComponent<LandControl>();
+        cloneControl.enabled = false;
+        Destroy(cloneControl);
+        // Clones don't need to be found individually (GameOver is
+        // driven by the manager's own tile list), and leaving the
+        // "movable" tag on them would make BroadcastMessage("GameOver")
+        // fail since they no longer have a receiver for it.
+        clone.tag = "Untagged";
+
+        tiles.Add(clone.transform);
     }
 
     // Update is called once per frame
     void Update () {
+        CoverCamera();
         if (!moving)
         {
             return;

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PipeMove : MonoBehaviour {
@@ -25,6 +25,13 @@ public class PipeMove : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        // Re-measured each frame: a window made wider mid-round moves the
+        // left edge, and a pipe must not vanish while still visible.
+        Camera cam = Camera.main;
+        if (cam != null)
+        {
+            despawnX = Mathf.Min(-0.4f, cam.transform.position.x - cam.orthographicSize * cam.aspect - PipeHalfWidth);
+        }
 		if (transform.position.x <= despawnX)
 		{
 			Destroy(gameObject);

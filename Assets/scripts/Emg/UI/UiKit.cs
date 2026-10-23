@@ -54,11 +54,13 @@ namespace CallibriEmg
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(ReferenceWidth, ReferenceHeight);
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            // Scale by height only. The app window is portrait (450 x 800),
-            // where this changes nothing, but Unity's Game view is usually
-            // landscape, and blending in the width made tall cards spill off
-            // the top and bottom of the screen there.
+            // Scale by height, so tall cards stay on screen in wide windows.
+            // Blending in the width made them spill off the top and bottom.
+            // ScreenFitScaler switches to width scaling in windows narrower
+            // than the 450 x 800 reference, where height scaling would cut
+            // off the cards' sides.
             scaler.matchWidthOrHeight = 1f;
+            host.AddComponent<ScreenFitScaler>();
 
             EnsureEventSystem();
             return canvas;

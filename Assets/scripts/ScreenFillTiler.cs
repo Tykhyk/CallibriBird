@@ -17,13 +17,33 @@ public class ScreenFillTiler : MonoBehaviour {
     // Copies are children, so they move with the original (the static
     // background and ground in the session scenes never move, and the game
     // scene's scrolling ground already tiles itself in LandControl).
+    //
+    // The app runs in a resizable window, so the camera's width can grow
+    // at any time; the copies are topped up whenever it changes. Copies
+    // are never removed: extra ones off-screen cost nothing.
+    private readonly System.Collections.Generic.HashSet<int> made = new System.Collections.Generic.HashSet<int>();
+    private float lastAspect = -1f;
+
     void Start () {
+        Fill();
+    }
+
+    void LateUpdate () {
+        Camera cam = Camera.main;
+        if (cam != null && !Mathf.Approximately(cam.aspect, lastAspect))
+        {
+            Fill();
+        }
+    }
+
+    private void Fill () {
         SpriteRenderer source = GetComponent<SpriteRenderer>();
         Camera cam = Camera.main;
         if (source == null || source.sprite == null || cam == null)
         {
             return;
         }
+        lastAspect = cam.aspect;
 
         float tileWidth = source.bounds.size.x - SeamOverlap;
         if (tileWidth <= 0f)
@@ -42,7 +62,7 @@ public class ScreenFillTiler : MonoBehaviour {
 
         for (int i = first; i <= last; i++)
         {
-            if (i == 0)
+            if (i == 0 || !made.Add(i))
             {
                 continue;
             }

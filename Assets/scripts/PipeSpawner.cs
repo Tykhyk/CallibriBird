@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using CallibriEmg;
 
@@ -64,7 +64,13 @@ public class PipeSpawner : MonoBehaviour {
 		float centre = Mathf.Clamp(heights[heightIndex] + GapCentreOffset, lastCentre - maxStep, lastCentre + maxStep);
 		float rootY = KeepOpeningOnScreen(centre - GapCentreOffset, difficulty.gapSize);
 		lastCentre = rootY + GapCentreOffset;
-		Vector2 pos = new Vector2(spawnX, rootY);
+		// The window can be resized mid-round, so the right edge is
+		// measured at every spawn, not once. Measuring from the current
+		// edge (not the widest one seen) also keeps the spacing right
+		// after the window is made narrower.
+		Camera cam = Camera.main;
+		float x = cam != null ? Mathf.Max(transform.position.x, cam.transform.position.x + cam.orthographicSize * cam.aspect + SpawnMargin) : spawnX;
+		Vector2 pos = new Vector2(x, rootY);
 
 		GameObject spawned = Instantiate(pipe, pos, transform.rotation);
         spawned.GetComponent<PipeMove>().moveSpeed = -difficulty.pipeSpeed;
