@@ -40,7 +40,7 @@ SOFTWARE.
 
 - **Location:** `Packages/com.neurotech.neurosdk2/`
 - **Copyright:** (c) 2025 BrainBit LLC, MIT License. The full license text is in `Packages/com.neurotech.neurosdk2/LICENSE.md`.
-- **Change:** the macOS library in that package was re-signed for this Mac, because BrainBit's signing certificate was revoked. The library itself is unchanged.
+- **Change:** the macOS library (`Plugins/MacOS/libneurosdk2.dylib`) is a newer copy that BrainBit supplied directly, signed with BrainBit's Developer ID and notarized by Apple. It replaces the package's original copy, whose signing certificate had been revoked. The code inside is identical to version 1.0.12; only the signature differs.
 
 ## DOTween
 

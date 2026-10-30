@@ -63,7 +63,7 @@ Each person's sessions are saved in their own folder. A simulated sensor is buil
 - **Real-sensor sessions**, which uncovered the blink spikes and the sensor's clock difference.
 
 ### Lessons learned
-- BrainBit's signing certificate for the macOS SDK library had been revoked, so macOS refused to load it. It was re-signed to run on this Mac until BrainBit releases a fixed version.
+- BrainBit's signing certificate for the macOS SDK library had been revoked, so macOS refused to load it. It was re-signed locally as a stopgap until BrainBit released the same library with a valid, Apple-notarized signature, which the project now uses.
 - A forehead sensor picks up the eye muscles too, so blinks look like squeezes. This is why a squeeze must last 0.15 s to count, why the trigger is always kept above the resting signal's normal wobble, and why the strength test uses the steady level.
 - A small clock difference in the hardware added up to seconds of error over a session. Measuring the real rate solved it.
 
